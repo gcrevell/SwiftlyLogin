@@ -104,6 +104,20 @@ struct GCRPolicy: OptionSet {
                                                .RequireLength12]
 }
 
+enum GCRPolicyError: ErrorProtocol {
+    case OmitsUpperCaseLetters
+    case OmitsLowerCaseLetters
+    case OmitsNumbers
+    case ContainsNumbers
+    case OmitsSpecialCharacters
+    case ContainsSpecialCharacters
+    case TooShort
+    case OmitsEmojis
+    case ContainsEmojis
+    
+    case EmailInvalid
+}
+
 /**
  SwiftlyLogin class. Stores the values for loggin into an account and
  can verify them with specified policies.
@@ -161,25 +175,33 @@ class GCRSwiftlyLogin {
             return _password
         }
     }
-}
-
-/**
- Verify an email address stored as a string.
- 
- This function uses a simple RegEx to verify if an entered email address
- is a valid email address. 
- 
- The RegEx pattern for this function was used from http://emailregex.com
- 
- - parameter email: String, the email address to check for validity.
- 
- - returns: Bool, true if the string contains exactly one email address,
- false otherwise.
- */
-func verify(email: String) -> Bool {
-    // This line used from http://emailregex.com
-    let emailRegex = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"
-    let regEx = try! RegularExpression(pattern: emailRegex, options: [])
     
-    return regEx.numberOfMatches(in: email, options: [], range: NSRange(location: 0, length: email.characters.count)) == 1
+    func verify() throws -> Bool {
+        if _email != nil && !GCRSwiftlyLogin.verify(email: _email!) {
+            throw GCRPolicyError.EmailInvalid
+        }
+        
+        return true
+    }
+    
+    /**
+     Verify an email address stored as a string.
+     
+     This function uses a simple RegEx to verify if an entered email address
+     is a valid email address.
+     
+     The RegEx pattern for this function was used from http://emailregex.com
+     
+     - parameter email: String, the email address to check for validity.
+     
+     - returns: Bool, true if the string contains exactly one email address,
+     false otherwise.
+     */
+    static func verify(email: String) -> Bool {
+        // This line used from http://emailregex.com
+        let emailRegex = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"
+        let regEx = try! RegularExpression(pattern: emailRegex, options: [])
+        
+        return regEx.numberOfMatches(in: email, options: [], range: NSRange(location: 0, length: email.characters.count)) == 1
+    }
 }

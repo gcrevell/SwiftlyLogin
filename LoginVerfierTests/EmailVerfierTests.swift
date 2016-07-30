@@ -21,8 +21,8 @@ class EmailVerfierTests: XCTestCase {
     }
     
     func testPersonalEmail() {
-        XCTAssert(verify(email: "skoobie94@gmail.com"),
-                  "Failed to confirm skoobie94@gmail.com as a valid email.")
+        XCTAssert(GCRSwiftlyLogin.verify(email: "wowza7125@icloud.com"),
+                  "Failed to confirm wowza7125@icloud.com as a valid email.")
     }
     
     func testWikipediaExamples() {
@@ -30,27 +30,27 @@ class EmailVerfierTests: XCTestCase {
         // https://en.wikipedia.org/wiki/Email_address
         
         var emailToTest = "prettyandsimple@example.com"
-        XCTAssert(verify(email: emailToTest),
+        XCTAssert(GCRSwiftlyLogin.verify(email: emailToTest),
                   "Failed to confirm \(emailToTest) as a valid email.")
         
         emailToTest = "very.common@example.com"
-        XCTAssert(verify(email: emailToTest),
+        XCTAssert(GCRSwiftlyLogin.verify(email: emailToTest),
                   "Failed to confirm \(emailToTest) as a valid email.")
         
         emailToTest = "disposable.style.email.with+symbol@example.com"
-        XCTAssert(verify(email: emailToTest),
+        XCTAssert(GCRSwiftlyLogin.verify(email: emailToTest),
                   "Failed to confirm \(emailToTest) as a valid email.")
         
         emailToTest = "other.email-with-dash@example.com"
-        XCTAssert(verify(email: emailToTest),
+        XCTAssert(GCRSwiftlyLogin.verify(email: emailToTest),
                   "Failed to confirm \(emailToTest) as a valid email.")
         
         emailToTest = "x@example.com"
-        XCTAssert(verify(email: emailToTest),
+        XCTAssert(GCRSwiftlyLogin.verify(email: emailToTest),
                   "Failed to confirm \(emailToTest) as a valid email.")
         
         emailToTest = "example-indeed@strange-example.com"
-        XCTAssert(verify(email: emailToTest),
+        XCTAssert(GCRSwiftlyLogin.verify(email: emailToTest),
                   "Failed to confirm \(emailToTest) as a valid email.")
     }
     
@@ -58,14 +58,14 @@ class EmailVerfierTests: XCTestCase {
         // Also taken from https://en.wikipedia.org/wiki/Email_address
         
         var emailToTest = "Abc.example.com"
-        XCTAssert(!verify(email: emailToTest),
+        XCTAssert(!GCRSwiftlyLogin.verify(email: emailToTest),
                   "Failed to confirm \(emailToTest) as an invalid email.")
     }
     
     func testVerifyEmailPerformance() {
         self.measure {
             let emailToTest = "example-indeed@strange-example.com"
-            XCTAssert(verify(email: emailToTest),
+            XCTAssert(GCRSwiftlyLogin.verify(email: emailToTest),
                       "Failed to confirm \(emailToTest) as a valid email.")
         }
     }
