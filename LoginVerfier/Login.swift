@@ -181,6 +181,10 @@ class GCRSwiftlyLogin {
             throw GCRPolicyError.EmailInvalid
         }
         
+        if let password = _password {
+            
+        }
+        
         return true
     }
     

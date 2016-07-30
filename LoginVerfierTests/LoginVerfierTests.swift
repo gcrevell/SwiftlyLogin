@@ -11,6 +11,8 @@ import XCTest
 
 class LoginVerfierTests: XCTestCase {
     
+    let loginManager = GCRSwiftlyLogin()
+    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -21,9 +23,24 @@ class LoginVerfierTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
+    func testValidEmail() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
+        loginManager.email = "wowza7125@icloud.com"
+        XCTAssert(try! loginManager.verify(), "Failed to verify the email address wowza7125@icloud.com")
+    }
+    
+    func testInvalidEmail() {
+        loginManager.email = "thisIs a badExample @ Hello World.wow"
+        do {
+            try loginManager.verify()
+            XCTFail("Successfully verified the email address \"thisIs a badExample @ Hello World.wow\".This should not have happened.")
+        } catch GCRPolicyError.EmailInvalid {
+            // Good!
+        } catch {
+            XCTFail("An unknown exception has occured.")
+        }
     }
     
     func testPerformanceExample() {
