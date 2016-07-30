@@ -129,7 +129,7 @@ struct GCRPolicy: OptionSet {
  */
 class GCRSwiftlyLogin {
     
-    private var _passwordRequirements: GCRPolicy
+    private var _passwordRequirements: GCRPolicy = []
     var passwordRequirements: GCRPolicy {
         set (newVal) {
             _passwordRequirements = newVal
@@ -151,8 +151,15 @@ class GCRSwiftlyLogin {
         }
     }
     
-    init() {
-        _passwordRequirements = []
+    private var _email: String?
+    var email: String? {
+        set (newVal) {
+            _email = newVal
+        }
+        
+        get {
+            return _password
+        }
     }
 }
 

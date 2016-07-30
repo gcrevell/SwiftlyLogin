@@ -62,4 +62,12 @@ class EmailVerfierTests: XCTestCase {
                   "Failed to confirm \(emailToTest) as an invalid email.")
     }
     
+    func testVerifyEmailPerformance() {
+        self.measure {
+            let emailToTest = "example-indeed@strange-example.com"
+            XCTAssert(verify(email: emailToTest),
+                      "Failed to confirm \(emailToTest) as a valid email.")
+        }
+    }
+    
 }
