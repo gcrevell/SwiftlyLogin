@@ -15,6 +15,7 @@
 		7C418FDD1D4BA246005DD026 /* LoginVerfierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C418FDC1D4BA246005DD026 /* LoginVerfierTests.swift */; };
 		7C418FE81D4BA267005DD026 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C418FE71D4BA267005DD026 /* Login.swift */; };
 		7C418FE91D4CD340005DD026 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C418FE71D4BA267005DD026 /* Login.swift */; };
+		7C418FEB1D4CDAD4005DD026 /* EmailVerfierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C418FEA1D4CDAD4005DD026 /* EmailVerfierTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +40,7 @@
 		7C418FDC1D4BA246005DD026 /* LoginVerfierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginVerfierTests.swift; sourceTree = "<group>"; };
 		7C418FDE1D4BA246005DD026 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7C418FE71D4BA267005DD026 /* Login.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
+		7C418FEA1D4CDAD4005DD026 /* EmailVerfierTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailVerfierTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,7 @@
 		7C418FDB1D4BA246005DD026 /* LoginVerfierTests */ = {
 			isa = PBXGroup;
 			children = (
+				7C418FEA1D4CDAD4005DD026 /* EmailVerfierTests.swift */,
 				7C418FDC1D4BA246005DD026 /* LoginVerfierTests.swift */,
 				7C418FDE1D4BA246005DD026 /* Info.plist */,
 			);
@@ -217,6 +220,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C418FEB1D4CDAD4005DD026 /* EmailVerfierTests.swift in Sources */,
 				7C418FE91D4CD340005DD026 /* Login.swift in Sources */,
 				7C418FDD1D4BA246005DD026 /* LoginVerfierTests.swift in Sources */,
 			);
