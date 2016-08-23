@@ -65,10 +65,10 @@ struct GCRPolicy: OptionSet {
     static let RequireLength12          = GCRPolicy(rawValue: 1 << 6)
     
     /// Require the string contains an emoji character.
-    static let RequireEmoji             = GCRPolicy(rawValue: 1 << 7)
+//    static let RequireEmoji             = GCRPolicy(rawValue: 1 << 7)
     
     /// Forbid the string from containing an emoji character.
-    static let ForbidEmoji              = GCRPolicy(rawValue: 1 << 8)
+//    static let ForbidEmoji              = GCRPolicy(rawValue: 1 << 8)
     
     
     /**
@@ -105,17 +105,17 @@ struct GCRPolicy: OptionSet {
 }
 
 enum GCRPolicyError: Error {
-    case OmitsUpperCaseLetters
-    case OmitsLowerCaseLetters
-    case OmitsNumbers
-    case ContainsNumbers
-    case OmitsSpecialCharacters
-    case ContainsSpecialCharacters
-    case TooShort
-    case OmitsEmojis
-    case ContainsEmojis
+    case omitsUpperCaseLetters
+    case omitsLowerCaseLetters
+    case omitsNumbers
+    case containsNumbers
+    case omitsSpecialCharacters
+    case containsSpecialCharacters
+    case tooShort
+//    case omitsEmojis
+//    case containsEmojis
     
-    case EmailInvalid
+    case emailInvalid
 }
 
 /**
@@ -143,10 +143,20 @@ enum GCRPolicyError: Error {
  */
 class GCRSwiftlyLogin {
     
-    private var _passwordRequirements: GCRPolicy = []
+    fileprivate var _passwordRequirements: GCRPolicy = []
     var passwordRequirements: GCRPolicy {
         set (newVal) {
-            _passwordRequirements = newVal
+            var value = newVal
+            
+            if value.contains(.RequireNumber) && value.contains(.ForbidNumber) {
+                value.remove(.ForbidNumber)
+            }
+            
+            if value.contains(.RequireLength8) && value.contains(.RequireLength12) {
+                value.remove(.RequireLength8)
+            }
+            
+            _passwordRequirements = value
         }
         
         get {
@@ -154,7 +164,7 @@ class GCRSwiftlyLogin {
         }
     }
     
-    private var _password: String?
+    fileprivate var _password: String?
     var password: String? {
         set (newVal) {
             _password = newVal
@@ -165,7 +175,7 @@ class GCRSwiftlyLogin {
         }
     }
     
-    private var _email: String?
+    fileprivate var _email: String?
     var email: String? {
         set (newVal) {
             _email = newVal
@@ -177,8 +187,8 @@ class GCRSwiftlyLogin {
     }
     
     func verify() throws -> Bool {
-        if _email != nil && !GCRSwiftlyLogin.verify(email: _email!) {
-            throw GCRPolicyError.EmailInvalid
+        if _email != nil && !GCRSwiftlyLogin.verify(_email!) {
+            throw GCRPolicyError.emailInvalid
         }
         
         if let password = self.password {
@@ -186,21 +196,67 @@ class GCRSwiftlyLogin {
                 // Password requirements require upper and lower case letters
                 if password.uppercased() == password {
                     // Password is same with all upper case (no lower case)
-                    throw GCRPolicyError.OmitsLowerCaseLetters
+                    throw GCRPolicyError.omitsLowerCaseLetters
                 }
                 
                 if password.lowercased() == password {
                     // Password is same with all lower case (no upper case)
-                    throw GCRPolicyError.OmitsUpperCaseLetters
+                    throw GCRPolicyError.omitsUpperCaseLetters
                 }
             }
             
             if self.passwordRequirements.contains(.RequireNumber) {
-                
+                if password.rangeOfCharacter(from: .decimalDigits) == nil {
+                    throw GCRPolicyError.omitsNumbers
+                }
+            }
+            
+            if self.passwordRequirements.contains(.ForbidNumber) {
+                if password.rangeOfCharacter(from: .decimalDigits) != nil {
+                    throw GCRPolicyError.containsNumbers
+                }
+            }
+            
+            if self.passwordRequirements.contains(.RequireSpecialCharacter) {
+                if password.rangeOfCharacter(from: CharacterSet(charactersIn: "!@#$%^&*()-_=+[]{};':,./<>?")) == nil {
+                    throw GCRPolicyError.omitsSpecialCharacters
+                }
+            }
+            
+            if self.passwordRequirements.contains(.ForbidSpecialCharacter) {
+                if password.rangeOfCharacter(from: CharacterSet(charactersIn: "!@#$%^&*()-_=+[]{};':,./<>?")) != nil {
+                    throw GCRPolicyError.containsSpecialCharacters
+                }
+            }
+            
+            if self.passwordRequirements.contains(.RequireLength8) {
+                if password.characters.count < 8 {
+                    throw GCRPolicyError.tooShort
+                }
+            }
+            
+            if self.passwordRequirements.contains(.RequireLength12) {
+                if password.characters.count < 12 {
+                    throw GCRPolicyError.tooShort
+                }
             }
         }
         
         return true
+    }
+    
+    func saveToKeychain() {
+        let KC = KeychainWrapper()
+        KC.mySetObject(password, forKey: "GCRPassword")
+        KC.mySetObject(email, forKey: "GCREmail")
+        
+        KC.writeToKeychain()
+    }
+    
+    func loadFromKeychain() {
+        let KC = KeychainWrapper()
+        password = KC.myObject(forKey: "GCRPassword") as? String
+        email = KC.myObject(forKey: "GCREmail") as? String
     }
     
     /**
@@ -216,7 +272,7 @@ class GCRSwiftlyLogin {
      - returns: Bool, true if the string contains exactly one email address,
      false otherwise.
      */
-    static func verify(email: String) -> Bool {
+    static func verify(_ email: String) -> Bool {
         // This line used from http://emailregex.com
         let emailRegex = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"
         let regEx = try! NSRegularExpression(pattern: emailRegex, options: [])

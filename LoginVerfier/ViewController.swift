@@ -14,7 +14,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-//        UIButton().addTarget(self, action: #selector(viewDidLoad), for: UIControlEvents)
+        let loginManager = GCRSwiftlyLogin()
+        
+        loginManager.passwordRequirements = [.RequireNumber]
+        loginManager.password = "gabe1"
+        loginManager.email = "skoobie94@gmail.com"
+        
+        loginManager.saveToKeychain()
     }
 
     override func didReceiveMemoryWarning() {

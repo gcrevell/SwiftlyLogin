@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import LoginVerfier
+//@testable import GCRSwiftlyLogin
 
 class LoginVerfierTests: XCTestCase {
     
@@ -24,23 +24,41 @@ class LoginVerfierTests: XCTestCase {
     }
     
     func testValidEmail() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        
         loginManager.email = "wowza7125@icloud.com"
         XCTAssert(try! loginManager.verify(), "Failed to verify the email address wowza7125@icloud.com")
     }
     
     func testInvalidEmail() {
         loginManager.email = "thisIs a badExample @ Hello World.wow"
+        loginManager.passwordRequirements = .RequireNumber
+        
         do {
             try loginManager.verify()
             XCTFail("Successfully verified the email address \"thisIs a badExample @ Hello World.wow\".This should not have happened.")
-        } catch GCRPolicyError.EmailInvalid {
+        } catch GCRPolicyError.emailInvalid {
             // Good!
         } catch {
             XCTFail("An unknown exception has occured.")
         }
+    }
+    
+    func testInvalidPasswordNumbers() {
+        loginManager.password = "passwordOne@?***"
+        loginManager.passwordRequirements = .RequireNumber
+        
+        do {
+            try loginManager.verify()
+            XCTFail("Successfully verified the password \"passwordOne@?***\".This should not have happened.")
+        } catch GCRPolicyError.omitsNumbers {
+            // Good!
+        } catch {
+            XCTFail("An unknown exception has occured.")
+        }
+    }
+    
+    func testValidPasswordNumbers() {
+        loginManager.password = "password1234"
+        XCTAssert(try! loginManager.verify(), "Failed to verify the password 'password1'")
     }
     
     func testPerformanceExample() {
