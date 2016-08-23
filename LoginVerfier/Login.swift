@@ -104,7 +104,7 @@ struct GCRPolicy: OptionSet {
                                                .RequireLength12]
 }
 
-enum GCRPolicyError: ErrorProtocol {
+enum GCRPolicyError: Error {
     case OmitsUpperCaseLetters
     case OmitsLowerCaseLetters
     case OmitsNumbers
@@ -181,8 +181,23 @@ class GCRSwiftlyLogin {
             throw GCRPolicyError.EmailInvalid
         }
         
-        if let password = _password {
+        if let password = self.password {
+            if self.passwordRequirements.contains(.RequireUpperAndLowerCase) {
+                // Password requirements require upper and lower case letters
+                if password.uppercased() == password {
+                    // Password is same with all upper case (no lower case)
+                    throw GCRPolicyError.OmitsLowerCaseLetters
+                }
+                
+                if password.lowercased() == password {
+                    // Password is same with all lower case (no upper case)
+                    throw GCRPolicyError.OmitsUpperCaseLetters
+                }
+            }
             
+            if self.passwordRequirements.contains(.RequireNumber) {
+                
+            }
         }
         
         return true
@@ -204,7 +219,7 @@ class GCRSwiftlyLogin {
     static func verify(email: String) -> Bool {
         // This line used from http://emailregex.com
         let emailRegex = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"
-        let regEx = try! RegularExpression(pattern: emailRegex, options: [])
+        let regEx = try! NSRegularExpression(pattern: emailRegex, options: [])
         
         return regEx.numberOfMatches(in: email, options: [], range: NSRange(location: 0, length: email.characters.count)) == 1
     }
